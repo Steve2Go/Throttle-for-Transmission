@@ -11,9 +11,9 @@ A transmission remote client for MacOS written in pure Swift with SwiftUI
 The original project appears to have died. 
 
 There are a few things that I loved about TransGui, but it's unstable on mac, and Mission's base was really appealing. I'd happily merge my changes back into main if it comes back to life.
-I've added 25 to the name, ie 2025. It's thre repository only, and the intention is to merge this back it the original project comes back to life and the original maintainer is agreeable.
+I've added 25 to the name, ie 2025. The intention is to merge this back if the original project comes back to life and the original maintainer is agreeable.
 
-## I'm new to swift and a prdestrian programmer.
+## I'm new to swift and a pedestrian programmer.
 I know there is a lot of refactoring to do, things that would reduce complexity. I'll work on it. I've focued on trying to acheive feature parity with other, non mac tools.
 
 ##Done so far:
