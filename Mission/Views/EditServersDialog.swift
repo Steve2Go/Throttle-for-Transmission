@@ -28,7 +28,7 @@ struct EditServersDialog: View {
                     store.editServers.toggle()
                 }, label: {
                     Image(systemName: "xmark.circle.fill")
-                        .padding(.top, 20)
+                        .padding(.top, 10)
                         .padding(.bottom, 10)
                 }).buttonStyle(BorderlessButtonStyle())
                     .padding(.trailing, 20)
@@ -82,9 +82,11 @@ struct ServerDetailsView: View {
     @State var hostInput: String = ""
     @State var portInput: String = ""
     @State var userInput: String = ""
+    @State var userPath: String = "/transmission/rpc"
     @State var passInput: String = ""
     @State var isDefault: Bool = false
     @State var isSSL: Bool = false
+    @State var pathInput: String = ""
     
     init(host: Host, viewContext: NSManagedObjectContext, store: Store) {
         self.host = host
@@ -109,7 +111,7 @@ struct ServerDetailsView: View {
         }
         
         VStack(alignment: .leading, spacing: 0) {
-            Text("Hostname (no http://)")
+            Text("Hostname or IP")
                 .font(.system(size: 10))
                 .padding(.leading, 20)
             
@@ -139,6 +141,19 @@ struct ServerDetailsView: View {
                 .padding([.leading, .trailing], 20)
                 .padding([.top, .bottom], 5)
                 .onAppear { portInput = "\(host.port)" }
+        }
+        VStack(alignment: .leading, spacing: 0) {
+            Text("RPC Path")
+                .font(.system(size: 10))
+                .padding(.leading, 20)
+            
+            TextField(
+                "/transmission/rpc",
+                text: $userPath
+            )
+                .padding([.leading, .trailing], 20)
+                .padding([.top, .bottom], 5)
+                .onAppear { userPath = host.path ?? "/transmission/rpc" }
         }
         
         VStack(alignment: .leading, spacing: 0) {
@@ -186,7 +201,25 @@ struct ServerDetailsView: View {
                     .buttonStyle(BorderlessButtonStyle())
             }
         }
-        
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Path Map")
+                .font(.system(size: 10))
+                .padding(.leading, 20)
+            Text("(Optional, Hint: Most network paths map to /Volumes/Drivename)")
+                .font(.system(size: 8))
+                .padding(.leading, 20)
+            
+            TextField(
+                "/server/path=/Volumes/path",
+                text: $pathInput
+            )   .padding([.leading, .trailing], 20)
+                .padding([.top, .bottom], 5)
+                .onAppear {
+                    //let key = String(host.id)! + "pathMap"
+                    pathInput = UserDefaults.standard.string(forKey: (host.name! + "Pmap")) ?? ""
+                }
+                    
+        }
         HStack {
             Toggle("Make default", isOn: $isDefault)
                 .padding(.leading, 20)
@@ -199,7 +232,9 @@ struct ServerDetailsView: View {
                 host.server = hostInput
                 host.port = Int16(portInput)!
                 host.username = userInput
+                host.path = userPath
                 host.ssl = isSSL
+                UserDefaults.standard.setValue(pathInput, forKey: (host.name! + "Pmap"))
                 
                 try? viewContext.save()
                 

@@ -1,21 +1,20 @@
-//
-//  MissionApp.swift
-//  Mission
-//
-//  Created by Joe Diragi on 2/24/22.
-//
-
 import SwiftUI
 import Combine
+import AlertToast
+import KeychainAccess
 
 @main
 struct MissionApp: App {
     let persistenceController = PersistenceController.shared
-    
-    var body: some Scene {
-        WindowGroup {
+    var body: some Scene { 
+        WindowGroup(id: "main") {
             ContentView()
+                .handlesExternalEvents(preferring: Set(arrayLiteral: "*"), allowing: Set(arrayLiteral: "*"))
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
+        Settings {
+                 SettingsView()
+             }
+        
     }
 }

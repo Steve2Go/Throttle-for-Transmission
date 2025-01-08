@@ -23,6 +23,7 @@ struct ContentView: View {
     @State private var alertInput = ""
     @State private var filename  = ""
     @State private var downloadDir = ""
+
     
     var body: some View {
         List(store.torrents, id: \.self) { torrent in
@@ -36,20 +37,22 @@ struct ContentView: View {
             AlertToast(type: .loading)
         }
         .onAppear(perform: {
-            checkForUpdates()
+           // checkForUpdates()
+            // Set the server
             hosts.forEach { h in
-                if (h.isDefault) {
-                    store.setHost(host: h)
+                
+                if UserDefaults.standard.bool(forKey: "reOpen") == true {
+                    if h.name == UserDefaults.standard.string(forKey: "lastServer") {
+                        store.setHost(host: h)
+                    }
+                }else{
+                    if (h.isDefault) {
+                        store.setHost(host: h)
+                    }
                 }
+                
             }
             if (store.host != nil) {
-                let info = makeConfig(store: store)
-                getDefaultDownloadDir(config: info.config, auth: info.auth, onResponse: { downloadDir in
-                    DispatchQueue.main.async {
-                        store.defaultDownloadDir = downloadDir
-                        self.downloadDir = store.defaultDownloadDir
-                    }
-                })
                 updateList(store: store, update: { vals in
                     DispatchQueue.main.async {
                         store.torrents = vals
@@ -61,8 +64,34 @@ struct ContentView: View {
                 store.setup = true
             }
         })
-        .navigationTitle("Mission")
+        .navigationTitle(store.tabName)
         .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Menu {
+                    Button("All") {
+                        UserDefaults.standard.removeObject(forKey: "listFilter")
+                        
+                                }
+                    Button("Downloading") {
+                        UserDefaults.standard.set(4, forKey: "listFilter")
+                    }
+                    Button("Seeding") {
+                        UserDefaults.standard.set(6, forKey: "listFilter")
+                    }
+                    Button("Stopped") {
+                        UserDefaults.standard.set(0, forKey: "listFilter")
+                    }
+                    Divider()
+                    Button("By Date Added") {
+                        UserDefaults.standard.set("addedDate", forKey: "listOrder")
+                    }
+                    Button("By Last Updated") {
+                        UserDefaults.standard.set("activityDate", forKey: "listOrder")
+                    }
+                } label: {
+                    Image(systemName: "line.3.horizontal.decrease")
+                }
+            }
             ToolbarItem(placement: .automatic) {
                 Menu {
                     Button(action: {
@@ -97,8 +126,11 @@ struct ContentView: View {
                     }
                     Divider()
                     Button(action: {store.editServers.toggle()}) {
-                        Text("Edit")
+                        Text("Edit Servers")
                     }
+//                    Button(action: {store.makeDefaultMagnetHandler() }) {
+//                        Text("Associate Files")
+//                    }
                 } label: {
                     Image(systemName: "network")
                 }
@@ -111,6 +143,14 @@ struct ContentView: View {
                 }
             }
         }
+        .onDisappear(){
+            UserDefaults.standard.removeObject(forKey: "listFilter")
+        }
+        .onOpenURL { (url) in
+            store.urlWaiting = url.absoluteString
+            store.isShowingAddAlert.toggle()
+          }
+        
         // Add server sheet
         .sheet(isPresented: $store.setup, content: {
             AddServerDialog(store: store, viewContext: viewContext, hosts: hosts)
@@ -121,7 +161,7 @@ struct ContentView: View {
         // Edit server sheet
         .sheet(isPresented: $store.editServers, content: {
             EditServersDialog(viewContext: viewContext, store: store)
-                .frame(width: 450, height: 350)
+                .frame(width: 450, height: 420)
                 .onExitCommand(perform: {
                     store.editServers.toggle()
                 })
@@ -133,10 +173,26 @@ struct ContentView: View {
                     store.isShowingAddAlert.toggle()
                 })
         })
+        // Add download location
+        .sheet(isPresented: $store.isShowingLocation, content: {
+            LocationPicker(store: store)
+//                .frame(height: 200)
+                .onExitCommand(perform: {
+                    store.isShowingLocation.toggle()
+                })
+        })
+        // Add torrent information
+        .sheet(isPresented: $store.isShowingTorrentInfoDialog, content: {
+            TorrentInfoDialog(store:store)
+                .frame(width: 800, height: 600)
+                .onExitCommand(perform: {
+                    store.isShowingTorrentInfoDialog.toggle()
+                })
+        })
         // Add transfer file picker
         .sheet(isPresented: $store.isShowingTransferFiles, content: {
             FileSelectDialog(store: store)
-                .frame(width: 400, height: 500)
+                .frame(width: 800, height: 500)
                 .onExitCommand(perform: {
                     store.isShowingTransferFiles.toggle()
                 })
@@ -155,6 +211,12 @@ struct ContentView: View {
                 .frame(width: 400, height: 500)
                 
         })
+//        // Settings dialog
+//        .sheet(isPresented: $store.isShowingSettings, content: {
+//            store.isShowingSettings.toggle()
+//                
+//                
+//        })
     }
     
     func binding(for torrent: Torrent) -> Binding<Torrent> {
@@ -204,6 +266,7 @@ func makeConfig(store: Store) -> (config: TransmissionConfig, auth: Transmission
     var config = TransmissionConfig()
     config.host = store.host?.server
     config.port = Int(store.host!.port)
+    config.path = store.host?.path ?? "/transmission/rpc"
     config.scheme = store.host!.ssl ? "https" : "http"
     let keychain = Keychain(service: "me.jdiggity.mission")
     let password = keychain[store.host!.name!]
@@ -211,3 +274,6 @@ func makeConfig(store: Store) -> (config: TransmissionConfig, auth: Transmission
     
     return (config: config, auth: auth)
 }
+
+
+

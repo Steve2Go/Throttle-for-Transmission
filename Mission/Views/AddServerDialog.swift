@@ -17,6 +17,7 @@ struct AddServerDialog: View {
     @State var nameInput: String = ""
     @State var hostInput: String = ""
     @State var portInput: String = ""
+    @State var pathInput: String = "/transmission/rpc"
     @State var userInput: String = ""
     @State var passInput: String = ""
     @State var isDefault: Bool = false
@@ -44,7 +45,9 @@ struct AddServerDialog: View {
             TextField(
                 "Nickname",
                 text: $nameInput
-            ).textFieldStyle(RoundedBorderTextFieldStyle())
+            )
+                .padding([.leading, .trailing], 20)
+                .padding([.top, .bottom], 5)
                 
             TextField(
                 "Hostname (no http://)",
@@ -58,6 +61,12 @@ struct AddServerDialog: View {
             TextField(
                 "Port",
                 text: $portInput
+            )
+                .padding([.leading, .trailing], 20)
+                .padding([.top, .bottom], 5)
+            TextField(
+                "RPC Path",
+                text: $pathInput
             )
                 .padding([.leading, .trailing], 20)
                 .padding([.top, .bottom], 5)

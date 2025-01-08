@@ -1,0 +1,33 @@
+{
+  "originHash" : "8cbdee15b13c7df4b28a5bff4de5bc5df1d147e5decdd19cf7bb2f271ee2814a",
+  "pins" : [
+    {
+      "identity" : "alerttoast",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/elai950/AlertToast.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "76a1c1793cd3443001c20c6033beb84453b25d9f"
+      }
+    },
+    {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess",
+      "state" : {
+        "branch" : "master",
+        "revision" : "e0c7eebc5a4465a3c4680764f26b7a61f567cdaf"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftyJSON/SwiftyJSON",
+      "state" : {
+        "revision" : "af76cf3ef710b6ca5f8c05f3a31307d44a3c5828",
+        "version" : "5.0.2"
+      }
+    }
+  ],
+  "version" : 3
+}
