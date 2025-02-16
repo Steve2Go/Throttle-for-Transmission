@@ -1,4 +1,4 @@
-#Throttle For Transmission
+# Throttle For Transmission
 
 A transmission remote client for MacOS written in pure Swift with SwiftUI
 
@@ -18,7 +18,7 @@ Static icons use the inbult SF Icons, and thumnails use icons from https://icons
 ## I'm new to swift and a pedestrian programmer.
 I know there is a lot of refactoring to do, things that would reduce complexity. I'll work on it. I've focused on trying to achieve feature parity with other, non mac native tools.
 
-##Done so far:
+## Done so far:
 - Torrent Creation (Experimental)
 - Sidebar
 - Moved actions into the info screen for easy click-ability
@@ -40,12 +40,12 @@ I know there is a lot of refactoring to do, things that would reduce complexity.
 -- Server on startup - Default or last
 - Starring 
 - Thumbnails (with caveats )
-#IOS App!
+# IOS App!
 - Tested on iPhone 16 pro & iPad Mini 6
 - File browsing of remote content with native player & handoff to player of choice
 - Save location browsing
 
-##Todo so far:
+## Todo so far:
 - Start Paused
 - More confirmations - some things happen without feedback that they were successful.
 - Accessibility
@@ -78,7 +78,7 @@ Otherwise your entire downloads are open to the world.
 Using Basic Authentication is completely insecure without HTTP / SSL
 The Simple Server option uses SSL, but a self signed certificate, better than no SSL, but open to man in the middle attacks. The instructions are provided as a test of concept or LAN use only. You should be using VPN or NGINX / Caddy / Others as a reverse proxy with ssl.
 
-##Installing remote Preview 
+## Installing remote Preview 
 
 
 ##Simple Web Server (mac/win) - Easy, less secure, Not recommended for production.
@@ -90,12 +90,14 @@ Tick Accessible on your local network
 - Security - Tick Use HTTPS and generate dummy cert (This is where the risk is)
 - Tick Enable Basic HTTP Authentication and choose a sensible password
 - Save & Start the server - it will provide you with links that you can use in Throttle
+- In the Throttle - Settings Tick "Use Self Signed SSL"
 
 Port forwarding in your router is not recommended for this configuration
 
-##Nginx - Preferred
+## Nginx - Preferred
 
 If you're already using NGNIX to proxy over HTTPS, this is easy, just add a location block to your server configuration:
+
 `location /pathwhenbrowsingfromserver/ {
         auth_basic "Administrator’s Area";
         auth_basic_user_file /etc/apache2/.htpasswd;
@@ -114,7 +116,7 @@ Press Enter and type the password for yourusername at the prompts
 
 See more details from the source at https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/
 
-##Caddy
+## Caddy
 Coming
 
 
