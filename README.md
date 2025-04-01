@@ -1,3 +1,6 @@
+## Note this remains for reference, but has evolved int Throttle 2
+https://github.com/Steve2Go/throttle2
+
 # Throttle For Transmission
 
 A transmission remote client for MacOS written in pure Swift with SwiftUI
